@@ -2,8 +2,6 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { IoIosArrowDown } from "react-icons/io";
 
-import HorizontalScrollDiv from "./ScrollableDiv";
-import AutoScroll from "./AutoScroll";
 // import "./letssee.css";
 const courses = [
   {
@@ -152,7 +150,7 @@ function Courses() {
         setScrollPos((prev) => prev + 2);
         setDashCard((activeDash + 1) % 5);
       }
-    }, 3000);
+    }, 2000);
 
     return () => clearInterval(interval);
   }, [scrollPos]);

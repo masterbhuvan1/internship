@@ -1,23 +1,30 @@
-// components/WordSlider.js
 import { useState, useEffect } from "react";
+// If you're using a separate CSS file
 
 const words = ["learning", "academic"];
 const duration = 2000; // Duration in milliseconds for each word
 
 const WordSlider = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [animating, setAnimating] = useState(true);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentIndex((prevIndex) => (prevIndex + 1) % words.length);
-    }, duration);
+      setAnimating(false);
+      setTimeout(() => {
+        setCurrentIndex((prevIndex) => (prevIndex + 1) % words.length);
+        setAnimating(true);
+      }, 1000); // waits for the animation to complete
+    }, duration + 1000); // adds the animation duration to the waiting duration
 
     return () => clearInterval(interval);
   }, []);
 
   return (
-    <div className="h-16 transi  text-yellow-400 flex items-center justify-start text-7xl font-bold">
-      {words[currentIndex]}
+    <div className="slider-container h-24 text-yellow-400 flex items-center justify-start text-7xl font-bold">
+      <div className={animating ? "word-entering" : "word-exiting"}>
+        {words[currentIndex]}
+      </div>
     </div>
   );
 };

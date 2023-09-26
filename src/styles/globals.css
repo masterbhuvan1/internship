@@ -26,28 +26,40 @@ body {
     rgb(var(--background-start-rgb));
 }
 /* styles/globals.css */
-@keyframes slideUp {
+
+@keyframes slideIn {
   0% {
     transform: translateY(100%);
-  }
-  50% {
-    transform: translateY(0%);
+    opacity: 0;
   }
   100% {
-    transform: translateY(-100%);
+    transform: translateY(0);
+    opacity: 1;
   }
 }
 
-@keyframes slideDown {
+@keyframes slideOut {
   0% {
-    transform: translateY(-100%);
-  }
-  50% {
-    transform: translateY(0%);
+    transform: translateY(0);
+    opacity: 1;
   }
   100% {
-    transform: translateY(100%);
+    transform: translateY(-100%);
+    opacity: 0;
   }
+}
+
+.word-entering,
+.word-exiting {
+  position: absolute;
+}
+
+.word-entering {
+  animation: slideIn 1s forwards;
+}
+
+.word-exiting {
+  animation: slideOut 1s forwards;
 }
 
 .word {

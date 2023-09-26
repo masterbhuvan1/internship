@@ -9,8 +9,6 @@ import FifthSection from "./homePage/fifthSection";
 import SixthSection from "./homePage/sixthSection";
 import SeventhSection from "./homePage/seventhSection";
 
-import AutoScrollDiv from "./homePage/AutoScroll";
-import Home from "./homePage/AuScroll";
 function index() {
   return (
     <div className="">

@@ -8,9 +8,35 @@ import { IoIosArrowForward } from "react-icons/io";
 // import SubItemCard from "./subItemCard";
 import subItem from "./infoHeader";
 const items = ["courses", "study material", "results", "more"];
-function SubItemCard(props) {
+function BooksCard(props) {
   return (
-    <div className=" items-center hover:bg-gray-100 w-80 h-20 text-black bg-white flex rounded-lg">
+    <div
+      className={`${
+        props.svgPresent === null ? "" : "ml-20"
+      }text-base  grid grid-cols-2 text-black gap-2 `}
+    >
+      {props.data?.map((item, index) => (
+        <div key={index} className=" rounded-lg hover:bg-blue-200   p-1 ">
+          {item}
+        </div>
+      ))}
+    </div>
+  );
+}
+function SubItemCard(props) {
+  const handleClick = () => {
+    if (props.subItem) {
+      props.onSubMenuToggle(props.index, props.subIndex);
+    }
+    if (props.onDoubtClick) {
+      props.onDoubtClick();
+    }
+  };
+  return (
+    <div
+      className=" items-center hover:bg-blue-200 w-80 h-20 text-black bg-white flex rounded-lg"
+      onClick={handleClick}
+    >
       {props.data.listHeading === true ? (
         <div className="text-left px-4">{props.data.name}</div>
       ) : (
@@ -39,7 +65,7 @@ function SubItemCard(props) {
 function Header() {
   const [mobileMenu, setMobileMenu] = useState(false);
   const [activeItem, setActiveItem] = useState(null);
-  const [activeSubItem, setActiveSubItem] = useState(false);
+  const [activeSubItem, setActiveSubItem] = useState([false, false]);
   const [foundItem, setFoundItem] = useState(null);
   const [foundSubItem, setFoundSubItem] = useState(null);
   const [foundSmItem, setFoundSMItem] = useState(null);
@@ -61,10 +87,12 @@ function Header() {
   useEffect(() => {
     // Whenever activeItem changes, update foundItem
     if (activeSubItem !== null && activeItem !== null) {
-      const item = foundItem.subItems?.find(
-        (item) => item.id === activeSubItem
-      );
-      setFoundSubItem(item?.lists);
+      // const item = foundItem.subItems?.find(
+      //   (item) => item.id === activeSubItem
+      // );
+      const item = subItem.find((item) => item.id === activeSubItem[0]);
+      const tryy = item.subItems?.find((item) => item.id === activeSubItem[1]);
+      setFoundSubItem(tryy?.lists);
     } else {
       setFoundSubItem(null);
     }
@@ -74,20 +102,32 @@ function Header() {
     setActiveItem(index === activeItem ? null : index);
     setActiveSubItem(null);
   };
-  const toggleSubMenuItems = (index) => {
-    setActiveSubItem(activeItem != null ? index : null);
+  const toggleSubMenuItems = (index, subItem) => {
+    setActiveSubItem([index, subItem]);
   };
-  const hoverHandler1 = (index) => {
-    setActiveItem(index === activeItem ? null : index);
-  };
-  const hoverHandler2 = (index) => {
-    setActiveSubItem(activeSubItem != null ? index : null);
-  };
-  // console.log(activeItem);
+  // const hoverHandler1 = (index) => {
+  //   setActiveItem(index === activeItem ? null : index);
+  // };
+  // const hoverHandler2 = (index) => {
+  //   setActiveSubItem(activeSubItem != null ? index : null);
+  // };
+  // console.log("active Item", activeItem);
 
-  // console.log(activeSubItem);
-  // // console.log(foundItem);
-  // console.log(foundSubItem);
+  // console.log("active SubItem", activeSubItem);
+
+  // console.log("foundItem", foundItem);
+  // console.log("foundSubItem", foundSubItem);
+  const [visibleBooksCards, setVisibleBooksCards] = useState([]);
+
+  const toggleBooksCardVisibility = (index) => {
+    if (visibleBooksCards.includes(index)) {
+      // Hide the BooksCard
+      setVisibleBooksCards((prev) => prev.filter((i) => i !== index));
+    } else {
+      // Show the BooksCard
+      setVisibleBooksCards((prev) => [...prev, index]);
+    }
+  };
   return (
     <div>
       <nav className={`bg-blue-500 px-14 w-screen border-b-2`}>
@@ -110,7 +150,7 @@ function Header() {
                   <li
                     className={`flex px-7 items-center group hover:bg-blue-400 hover:border-white hover:border-2  hover:rounded-3xl p-1 `}
                     onClick={() => toggleSubMenu(index)}
-                    onMouseEnter={() => hoverHandler1(index)}
+                    // onMouseEnter={() => hoverHandler1(index)}
                   >
                     <div className="px-2">{item}</div>
                     <IoIosArrowDown size={15} />
@@ -121,14 +161,45 @@ function Header() {
                         <li
                           key={subIndex}
                           className="px-4 py-2 "
-                          onClick={() => toggleSubMenuItems(subItem.id)}
+                          // onClick={() => toggleSubMenuItems(index, subItem.id)}
                           // onMouseEnter={() => hoverHandler2(index)}
                         >
-                          <SubItemCard data={subItem} subItem={true} />
+                          <SubItemCard
+                            data={subItem}
+                            subItem={true}
+                            index={index}
+                            subIndex={subItem.id}
+                            onSubMenuToggle={toggleSubMenuItems}
+                          />
                           {activeSubItem != null && (
                             <ul className=" rounded-lg absolute w-fit bg-white  border-white border-2 top-0 left-full flex flex-col  ">
                               {foundSubItem?.map((subItem, listItemIndex) => (
-                                <SubItemCard data={subItem} />
+                                <div
+                                  key={listItemIndex}
+                                  className="flex items-center flex-col"
+                                >
+                                  <div
+                                    // onClick={() =>
+                                    //   toggleBooksCardVisibility(listItemIndex)
+                                    // }
+                                    className=" doubt "
+                                  >
+                                    <SubItemCard
+                                      data={subItem}
+                                      onDoubtClick={() =>
+                                        toggleBooksCardVisibility(listItemIndex)
+                                      }
+                                    />
+                                  </div>
+                                  {visibleBooksCards.includes(
+                                    listItemIndex
+                                  ) && (
+                                    <BooksCard
+                                      data={subItem.books}
+                                      svgPresent={subItem.svg}
+                                    />
+                                  )}
+                                </div>
                               ))}
                             </ul>
                           )}
