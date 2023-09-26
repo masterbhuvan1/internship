@@ -1,0 +1,14 @@
+/* Your CSS or SCSS file */
+.dash-indicators {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.dash {
+  width: 10px; /* Initial width of the dash */
+  height: 2px;
+  background-color: #000;
+  margin: 0 5px; /* Margin between dashes */
+  transition: width 0.3s ease-in-out; /* Transition for dash width */
+}
